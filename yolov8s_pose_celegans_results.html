@@ -1,0 +1,122 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Syne',sans-serif;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+.header{padding:2rem 0 1.5rem;border-bottom:0.5px solid var(--color-border-tertiary);}
+.badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:3px 10px;border-radius:4px;background:var(--color-background-info);color:var(--color-text-info);letter-spacing:0.04em;}
+.title{font-size:22px;font-weight:700;color:var(--color-text-primary);margin-top:10px;letter-spacing:-0.5px;}
+.subtitle{font-size:13px;color:var(--color-text-secondary);margin-top:4px;}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:1.5rem 0;}
+.metric-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem 1.1rem;}
+.metric-label{font-size:11px;color:var(--color-text-secondary);font-family:'IBM Plex Mono',monospace;letter-spacing:0.06em;margin-bottom:6px;}
+.metric-value{font-size:26px;font-weight:700;color:var(--color-text-primary);line-height:1;}
+.metric-sub{font-size:11px;color:var(--color-text-secondary);margin-top:4px;}
+.metric-bar{height:3px;border-radius:2px;margin-top:10px;background:var(--color-border-tertiary);}
+.metric-fill{height:100%;border-radius:2px;}
+.section-title{font-size:13px;font-weight:500;color:var(--color-text-secondary);font-family:'IBM Plex Mono',monospace;letter-spacing:0.08em;margin:1.5rem 0 0.75rem;}
+.chart-wrap{position:relative;width:100%;height:220px;margin-bottom:1.5rem;}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;}
+.legend span{display:flex;align-items:center;gap:5px;}
+.leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:1rem;}
+.info-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:0.9rem 1.1rem;}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;}
+.info-row:last-child{border-bottom:none;}
+.info-key{color:var(--color-text-secondary);}
+.info-val{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--color-text-primary);font-weight:500;}
+.verdict{margin-top:1.5rem;padding:1rem 1.25rem;border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-success);background:var(--color-background-success);}
+.verdict-title{font-size:13px;font-weight:500;color:var(--color-text-success);margin-bottom:4px;}
+.verdict-text{font-size:13px;color:var(--color-text-success);line-height:1.6;}
+</style>
+
+<div style="padding:0 0 2rem;">
+  <div class="header">
+    <span class="badge">YOLOv8s-pose · C. elegans · 50 epochs</span>
+    <div class="title">Pose estimation — final results</div>
+    <div class="subtitle">Training completed · Dataset: 1374 images · 2983 instances · 8 keypoints</div>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-label">BOX MAP50</div>
+      <div class="metric-value">96.8<span style="font-size:14px;color:var(--color-text-secondary);">%</span></div>
+      <div class="metric-sub">detection precision</div>
+      <div class="metric-bar"><div class="metric-fill" style="width:96.8%;background:#378ADD;"></div></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">BOX MAP50-95</div>
+      <div class="metric-value">87.8<span style="font-size:14px;color:var(--color-text-secondary);">%</span></div>
+      <div class="metric-sub">strict IoU threshold</div>
+      <div class="metric-bar"><div class="metric-fill" style="width:87.8%;background:#378ADD;"></div></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">POSE MAP50</div>
+      <div class="metric-value">96.9<span style="font-size:14px;color:var(--color-text-secondary);">%</span></div>
+      <div class="metric-sub">keypoint precision</div>
+      <div class="metric-bar"><div class="metric-fill" style="width:96.9%;background:#1D9E75;"></div></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">POSE MAP50-95</div>
+      <div class="metric-value">89.1<span style="font-size:14px;color:var(--color-text-secondary);">%</span></div>
+      <div class="metric-sub">strict keypoint eval</div>
+      <div class="metric-bar"><div class="metric-fill" style="width:89.1%;background:#1D9E75;"></div></div>
+    </div>
+  </div>
+
+  <div class="section-title">MAP50 VS MAP50-95 COMPARISON</div>
+  <div class="legend">
+    <span><span class="leg-dot" style="background:#378ADD;"></span>Box</span>
+    <span><span class="leg-dot" style="background:#1D9E75;"></span>Pose</span>
+  </div>
+  <div class="chart-wrap">
+    <canvas id="barChart" role="img" aria-label="Bar chart comparing Box and Pose mAP50 and mAP50-95 scores">Box mAP50 96.8%, Box mAP50-95 87.8%, Pose mAP50 96.9%, Pose mAP50-95 89.1%</canvas>
+  </div>
+
+  <div class="section-title">TRAINING CONFIG</div>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-row"><span class="info-key">Model</span><span class="info-val">YOLOv8s-pose</span></div>
+      <div class="info-row"><span class="info-key">Epochs</span><span class="info-val">50</span></div>
+      <div class="info-row"><span class="info-key">Batch size</span><span class="info-val">32</span></div>
+      <div class="info-row"><span class="info-key">Image size</span><span class="info-val">640 × 640</span></div>
+      <div class="info-row"><span class="info-key">Optimizer</span><span class="info-val">AdamW lr=0.002</span></div>
+    </div>
+    <div class="info-card">
+      <div class="info-row"><span class="info-key">Species</span><span class="info-val">C. elegans</span></div>
+      <div class="info-row"><span class="info-key">Keypoints</span><span class="info-val">8 per worm</span></div>
+      <div class="info-row"><span class="info-key">Train images</span><span class="info-val">~1100</span></div>
+      <div class="info-row"><span class="info-key">Val images</span><span class="info-val">1374</span></div>
+      <div class="info-row"><span class="info-key">GPU</span><span class="info-val">Colab T4 / A100</span></div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-title">Verdict</div>
+    <div class="verdict-text">Excellent results. Pose mAP50 of 96.9% and mAP50-95 of 89.1% on C. elegans keypoint detection is state-of-the-art level for a small-to-medium dataset. The model generalizes well across strict IoU thresholds, indicating high spatial precision on worm body keypoints.</div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+new Chart(document.getElementById('barChart'),{
+  type:'bar',
+  data:{
+    labels:['mAP50','mAP50-95'],
+    datasets:[
+      {label:'Box',data:[96.81,87.79],backgroundColor:'#378ADD',borderRadius:4},
+      {label:'Pose',data:[96.93,89.07],backgroundColor:'#1D9E75',borderRadius:4}
+    ]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>` ${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`}}},
+    scales:{
+      y:{min:80,max:100,ticks:{callback:(v)=>v+'%',font:{size:11}},grid:{color:'rgba(128,128,128,0.1)'}},
+      x:{ticks:{font:{size:12}},grid:{display:false}}
+    }
+  }
+});
+</script>
